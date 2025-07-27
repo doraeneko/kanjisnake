@@ -10,7 +10,6 @@ mod snake;
 use crate::arena::*;
 use crate::draw::*;
 use crate::snake::*;
-use std::path::PathBuf;
 
 const UPDATE_RATE_IN_SEC: f32 = 0.25;
 const ARENA_X: usize = 20;
