@@ -1,0 +1,37 @@
+name: Build and Deploy kanjisnake
+
+on:
+  push:
+    branches:
+      - master  # Trigger only on master pushes
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Add WebAssembly target
+        run: rustup target add wasm32-unknown-unknown
+
+      - name: Build kanjisnake for Web
+        run: cargo build --target wasm32-unknown-unknown --release
+
+      - name: Prepare web build
+        run: |
+          mkdir dist
+          # Copy the wasm binary
+          cp target/wasm32-unknown-unknown/release/kanjisnake.wasm kanjisnake/
+          # Copy static files (index.html, JS glue, textures, etc.)
+          cp -r assets/* kanjisnake/
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
