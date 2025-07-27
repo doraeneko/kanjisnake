@@ -5,10 +5,12 @@
 use macroquad::prelude::*;
 mod arena;
 mod draw;
+mod kanjis;
 mod snake;
 use crate::arena::*;
 use crate::draw::*;
 use crate::snake::*;
+use std::path::PathBuf;
 
 const UPDATE_RATE_IN_SEC: f32 = 0.25;
 const ARENA_X: usize = 20;
@@ -29,6 +31,9 @@ fn reset(arena: &mut Arena, snake: &mut Snake) {
 
 #[macroquad::main("Snaker")]
 async fn main() {
+    let kanji_font = load_ttf_font("assets/NotoSansJP-VariableFont_wght.ttf")
+        .await
+        .unwrap();
     let mut arena: Arena = Arena::new(ARENA_X, ARENA_Y);
     let mut snake: Snake = Snake::new(&mut arena);
     reset(&mut arena, &mut snake);
@@ -63,7 +68,7 @@ async fn main() {
         match game_state {
             GameState::Running => {
                 clear_background(LIGHTGRAY);
-                draw_arena(&arena);
+                draw_arena(&arena, &kanji_font);
             }
             GameState::Lost => {
                 game_over(false);

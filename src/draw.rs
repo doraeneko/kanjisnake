@@ -5,7 +5,7 @@
 use crate::arena::*;
 use macroquad::prelude::*;
 
-pub fn draw_arena(arena: &Arena) {
+pub fn draw_arena(arena: &Arena, kanji_font: &Font) {
     clear_background(BLACK);
     // Get current window size
     let win_w = screen_width();
@@ -16,14 +16,44 @@ pub fn draw_arena(arena: &Arena) {
     let cell_h = win_h / arena.height as f32;
     for y in 0..arena.height {
         for x in 0..arena.width {
+            let mut kanji_to_draw: char = ' ';
             let color = match arena.get(x, y) {
-                CellContent::Empty => DARKGRAY,
-                CellContent::Snake => RED,
-                CellContent::Food => GREEN,
+                CellContent::Empty => LIGHTGRAY,
+                CellContent::Snake(c) => {
+                    kanji_to_draw = c;
+                    if c == '$' { ORANGE } else { SKYBLUE }
+                }
+                CellContent::Food(c) => {
+                    kanji_to_draw = c;
+                    GREEN
+                }
             };
-            draw_rectangle(x as f32 * cell_w, y as f32 * cell_h, cell_w, cell_h, color);
+            let px = x as f32 * cell_w;
+            let py = y as f32 * cell_h;
+
+            draw_rectangle(px, py, cell_w, cell_h, color);
+            if kanji_to_draw != ' ' {
+                let font_size = (cell_h * 0.8) as u16;
+                let text_dimensions =
+                    measure_text(&kanji_to_draw.to_string(), Some(kanji_font), font_size, 1.0);
+                let text_x = px + (cell_w - text_dimensions.width) / 2.0;
+                let text_y = py + (cell_h + text_dimensions.height) / 2.0;
+
+                draw_text_ex(
+                    &kanji_to_draw.to_string(),
+                    text_x,
+                    text_y,
+                    TextParams {
+                        font: Some(kanji_font),
+                        font_size: font_size as u16,
+                        color: BLACK,
+                        ..Default::default()
+                    },
+                );
+            }
         }
     }
+
     draw_text(
         &format!("Counter: {}", arena.food_left()),
         20.0,

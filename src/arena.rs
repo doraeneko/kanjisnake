@@ -2,16 +2,17 @@
 // (C) 2025, part of Kanjiban by JoAn.
 // Game arena.
 
+use crate::kanjis::get_random_kanji;
 use macroquad::rand;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum CellContent {
     Empty,
-    Snake,
-    Food,
+    Snake(char),
+    Food(char),
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 pub struct ArenaPosition {
     pub x: usize,
     pub y: usize,
@@ -35,7 +36,10 @@ impl Arena {
     pub fn food_left(&self) -> usize {
         let total_cells = self.width * self.height;
         return (0..total_cells)
-            .filter(|&idx| self.cells[idx] == CellContent::Food)
+            .filter(|&idx| match self.cells[idx] {
+                CellContent::Food(_) => true,
+                _ => false,
+            })
             .count();
     }
 
@@ -62,7 +66,7 @@ impl Arena {
 
         // Pick the first n indices and set them to food
         for &idx in indices.iter().take(how_much) {
-            self.cells[idx] = CellContent::Food;
+            self.cells[idx] = CellContent::Food(get_random_kanji());
         }
     }
 
@@ -72,7 +76,7 @@ impl Arena {
         }
     }
 
-    pub fn set_pos(&mut self, pos: &ArenaPosition, value: CellContent) {
+    pub fn set_by_pos(&mut self, pos: &ArenaPosition, value: CellContent) {
         return self.set(pos.x, pos.y, value);
     }
 
@@ -84,7 +88,7 @@ impl Arena {
         }
     }
 
-    pub fn get_pos(&self, pos: &ArenaPosition) -> CellContent {
+    pub fn get_by_pos(&self, pos: &ArenaPosition) -> CellContent {
         return self.get(pos.x, pos.y);
     }
 }

@@ -3,7 +3,10 @@ name: Build and Deploy kanjisnake
 on:
   push:
     branches:
-      - master  # Trigger only on master pushes
+      - main  # Trigger only on main pushes
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -25,13 +28,17 @@ jobs:
       - name: Prepare web build
         run: |
           mkdir dist
+          mkdir dist/assets
           # Copy the wasm binary
-          cp target/wasm32-unknown-unknown/release/kanjisnake.wasm kanjisnake/
+          cp target/wasm32-unknown-unknown/release/kanjisnake.wasm ./dist/
           # Copy static files (index.html, JS glue, textures, etc.)
-          cp -r assets/* kanjisnake/
+          cp -r assets/* ./dist/assets/
+          cp -r web/* ./dist
+          touch ./dist/.nojekyll
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
+          enable_jekyll: false

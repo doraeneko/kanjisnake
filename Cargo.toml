@@ -2,6 +2,10 @@
 name = "kanjisnake"
 version = "0.1.0"
 edition = "2024"
+build = "copy_assets.rs"
 
 [dependencies]
 macroquad = "0.4"
+
+[build-dependencies]
+fs_extra = "1.3"
