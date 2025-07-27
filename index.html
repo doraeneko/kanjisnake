@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KanjiSnake</title>
+    <style>
+        html,
+        body,
+        canvas {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: absolute;
+            background: black;
+            z-index: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="glcanvas" tabindex='0'></canvas>
+    <!-- Minified and statically hosted version of https://github.com/not-fl3/macroquad/blob/master/js/mq_js_bundle.js -->
+    <script src="https://not-fl3.github.io/miniquad-samples/mq_js_bundle.js"></script>
+    <!--<script>load("kanjisnake.wasm");</script> <!-- Your compiled WASM binary -->-->
+    <script>
+        const my_canvas = document.getElementById("glcanvas");
+        my_canvas.focus();  // Make sure the canvas is focused at start
+
+        // Refocus if the player clicks inside the canvas
+        my_canvas.addEventListener("click", () => my_canvas.focus());
+
+        // Now load the Macroquad game
+        load("kanjisnake.wasm");
+    </script>
+</body>
+
+</html>
+<!--
+<canvas id="game" tabindex="0"></canvas>
+<script type="module">
+    import init from './your_game.js';
+
+    const canvas = document.getElementById('game');
+    canvas.focus(); // ensure focus on load
+
+    canvas.addEventListener('click', () => canvas.focus()); // refocus on click
+    init();
+</script>
+-->
