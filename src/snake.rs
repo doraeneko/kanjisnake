@@ -1,5 +1,5 @@
-// Snaker
-// (C) 2025, part of Kanjiban by JoAn.
+// kanjisnake
+// (C) 2025, Andreas Gaiser
 // Snake abstraction.
 
 use crate::arena::*;
